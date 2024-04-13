@@ -61,7 +61,7 @@ Windows: venv\Scripts\activate
 macOS/Linux: source venv/bin/activate
 
 Install development dependencies:
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 
 Run tests:
 pytest

@@ -1,13 +1,15 @@
 import os
 import json
+import subprocess
 from utils.logging_utils import logger
 from .pdf_operations import PDFOperations
 
 class PDFGenerator:
-    def __init__(self, directory, output_path, exclude_folders=None, config_path='config.json'):
+    def __init__(self, directory, output_path, exclude_folders=None, exclude_file_types=None, config_path='config.json'):
         self.directory = directory
         self.output_path = output_path
         self.exclude_folders = exclude_folders if exclude_folders else []
+        self.exclude_file_types = exclude_file_types if exclude_file_types else []
         with open(config_path, 'r') as config_file:
             config = json.load(config_file)
         self.font_family = config.get('font_family', 'Arial')
@@ -19,11 +21,19 @@ class PDFGenerator:
     def filter_unsupported_chars(self, text):
         return text.encode("ascii", errors="ignore").decode("utf-8")
 
+    def get_file_type(self, file_path):
+        try:
+            result = subprocess.run(["file", "-b", file_path], capture_output=True, text=True, check=True)
+            file_type = result.stdout.strip()
+            return file_type
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Error determining file type for {file_path}: {e}")
+            return None  # Return None if an error occurs
 
     def process_directory(self, directory_path, include_hidden, file_types):
         # Check if the current directory is in the list of excluded folders
         if os.path.basename(directory_path) in self.exclude_folders:
-            return # Skip processing this directory
+            return  # Skip processing this directory
 
         # Set font for directory description
         self.pdf_operations.set_font(self.font_family, size=self.font_size)
@@ -32,8 +42,20 @@ class PDFGenerator:
         for item in os.listdir(directory_path):
             item_path = os.path.join(directory_path, item)
             if (include_hidden or not item.startswith('.')) and os.path.isfile(item_path):
-                # Check if the file has one of the specified file types, or if no file types are specified
-                if file_types is None or os.path.splitext(item)[-1] in file_types:
+                # Check file type inclusion and exclusion
+                file_extension = os.path.splitext(item)[-1]
+                if file_extension:
+                    should_process = (file_types is None or file_extension in file_types) and \
+                                    file_extension not in self.exclude_file_types
+                else:
+                    file_type = self.get_file_type(item_path)
+                    # Check if detected file type (or "text" for broader matching) is in exclude_file_types
+                    should_process = not any(
+                        excluded_type in file_type or excluded_type in "text" 
+                        for excluded_type in self.exclude_file_types
+                    )
+
+                if should_process:
                     self.found_file = True
                     try:
                         # Attempt to open the file with utf-8 encoding and read its content
@@ -51,7 +73,7 @@ class PDFGenerator:
 
                         # Add the file name and filtered content to the PDF, including the directory path
                         self.pdf_operations.add_text(f"{item} ({description}):", align='L')
-                        self.pdf_operations.add_text(filtered_content, align='L')   
+                        self.pdf_operations.add_text(filtered_content, align='L')
                         self.pdf_operations.add_line_break()
 
                         # Log information about the file that was processed
@@ -60,6 +82,7 @@ class PDFGenerator:
                     except UnicodeDecodeError:
                         # If a UnicodeDecodeError occurs, skip this file
                         logger.warning(f"Skipping file {item} due to encoding issues.")
+
                     except OSError as e:
                         # Log other OS errors
                         logger.error(f"Error processing file {item}: {e}")

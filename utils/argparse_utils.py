@@ -7,5 +7,6 @@ def parse_arguments():
     parser.add_argument('-i', '--include-hidden', action='store_true', help='Include hidden files.')
     parser.add_argument('-t', '--file-types', nargs='+', default=[], help='File types to process')
     parser.add_argument('-e', '--exclude-folders', type=str, nargs='+', default=[], help='Folders to exclude from processing')
-
+    parser.add_argument('-f', '--exclude-file-types', nargs='+', default=[], help='File types to exclude from processing')
+    
     return parser.parse_args()

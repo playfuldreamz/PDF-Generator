@@ -36,7 +36,7 @@ def main():
     os.makedirs(output_subdir_path, exist_ok=True)
 
     # Pass the output subdirectory path to the PDFGenerator and DirectoryStructureGenerator
-    pdf_generator = PDFGenerator(args.directory, output_subdir_path, args.exclude_folders)
+    pdf_generator = PDFGenerator(args.directory, output_subdir_path, args.exclude_folders, args.exclude_file_types)
     directory_structure_generator = DirectoryStructureGenerator(args.directory, output_subdir_path)
 
     # Use ThreadPoolExecutor to run the tasks in parallel

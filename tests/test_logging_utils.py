@@ -1,19 +1,24 @@
 import unittest
 import os
 import logging
+import tempfile
+
 from utils.logging_utils import configure_logging, logger, VERBOSE
 
 class TestLoggingConfiguration(unittest.TestCase):
     def setUp(self):
-        self.log_file = 'test.log'
-        if os.path.exists(self.log_file):
-            os.remove(self.log_file)
+        # Create a temporary log file
+        self.log_file = tempfile.NamedTemporaryFile(delete=False).name
+        self.logger = configure_logging(self.log_file) # Store the configured logger
 
     def tearDown(self):
-        for handler in logger.handlers:
-            if isinstance(handler, logging.FileHandler) and hasattr(handler, 'baseFilename'):
-                handler.close()
-                os.remove(handler.baseFilename)
+        # Properly close and remove handlers
+        for handler in self.logger.handlers[:]:
+            handler.close()
+            self.logger.removeHandler(handler)
+
+        # Remove the temporary log file
+        os.remove(self.log_file)
 
 
     """Tests configuration of logging using configure_logging().

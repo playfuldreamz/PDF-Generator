@@ -99,19 +99,13 @@ We welcome contributions to make this project even better! Here's how you can ge
 2.  Create a virtual environment: 
 ```
 python -m venv venv
-```
 
-3.  Activate the virtual environment:
+Activate the virtual environment:
+Windows: venv\Scripts\activate
+macOS/Linux: source venv/bin/activate
 
-    *   Windows: `venv\Scripts\activate`
-    *   macOS/Linux: `source venv/bin/activate`
-4.  Install development dependencies:
-
-```
+Install development dependencies:
 pip install -r requirements-dev.txt
-```
-
-5.  Run tests:
 
 ```
 pytest

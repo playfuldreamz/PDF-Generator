@@ -115,20 +115,33 @@ We welcome contributions to make this project even better! Here's how you can ge
 *   **Suggest features:** Have an idea for a cool new feature? Share it with us!
 *   **Submit pull requests:** Fix bugs, implement new features, or improve the documentation.
 
-## Development Setup:
+## Development Setup
 
-1.  Fork the repository.
-2.  Create a virtual environment: 
-```
+1.Fork the repository.
+2.Create a virtual environment:
+```bash
 python -m venv venv
+```
 
-Activate the virtual environment:
-Windows: venv\Scripts\activate
-macOS/Linux: source venv/bin/activate
+3.Activate the virtual environment:
+Windows:
 
-Install development dependencies:
+```bash
+venv\Scripts\activate
+```
+
+macOS/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+4.Install development dependencies:
+```
 pip install -r requirements-dev.txt
+```
 
+## Run tests
 ```
 pytest
-``` 
+```

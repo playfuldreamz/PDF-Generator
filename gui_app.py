@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog, font
 import os
+import json
+
 from pdf_generator.pdf_generator import PDFGenerator
 from directory_structure_generator.directory_structure_generator import DirectoryStructureGenerator
 
@@ -9,6 +11,10 @@ class PDFGeneratorApp:
         self.master = master
         master.title("PDF Generator")
 
+        # Load config.json
+        self.config_path = 'config.json'
+        self.load_config()
+        
         # Configure default font style
         default_font = font.Font(family="Inter", size=10, weight="bold")  # Adjust as needed
         master.option_add("*Font", default_font) 
@@ -61,6 +67,35 @@ class PDFGeneratorApp:
         include_hidden_checkbox = tk.Checkbutton(input_frame, text="Include Hidden Files:", variable=self.include_hidden_var)
         include_hidden_checkbox.pack()
 
+        # Settings Frame
+        settings_frame = tk.LabelFrame(master, text="PDF Settings")
+        settings_frame.pack(padx=10, pady=10)
+
+        # Font Family
+        font_family_label = tk.Label(settings_frame, text="Font Family:")
+        font_family_label.grid(row=0, column=0, sticky="w")
+        self.font_family_entry = tk.Entry(settings_frame, width=20)
+        self.font_family_entry.insert(0, self.config['font_family'])
+        self.font_family_entry.grid(row=0, column=1)
+
+        # Font Size
+        font_size_label = tk.Label(settings_frame, text="Font Size:")
+        font_size_label.grid(row=1, column=0, sticky="w")
+        self.font_size_entry = tk.Entry(settings_frame, width=20)
+        self.font_size_entry.insert(0, self.config['font_size'])
+        self.font_size_entry.grid(row=1, column=1)
+
+        # Line Spacing
+        line_spacing_label = tk.Label(settings_frame, text="Line Spacing:")
+        line_spacing_label.grid(row=2, column=0, sticky="w")
+        self.line_spacing_entry = tk.Entry(settings_frame, width=20)
+        self.line_spacing_entry.insert(0, self.config['line_spacing'])
+        self.line_spacing_entry.grid(row=2, column=1)
+
+        # Save Settings Button
+        save_settings_button = tk.Button(settings_frame, text="Save Settings", command=self.save_config)
+        save_settings_button.grid(row=3, column=0, columnspan=2, pady=10)
+
         # Progress bar
         self.progress_bar = ttk.Progressbar(output_frame, orient="horizontal", length=200, mode="determinate")
         self.progress_bar.pack()
@@ -89,6 +124,22 @@ class PDFGeneratorApp:
 
         self.exclude_folders_entry.bind("<Enter>", lambda event: self.show_tooltip(event, "Enter folder names to exclude (separated by spaces)"))
         self.exclude_folders_entry.bind("<Leave>", lambda event: self.hide_tooltip())
+        
+    def load_config(self):
+        """Loads configuration from config.json."""
+        with open(self.config_path, 'r') as f:
+            self.config = json.load(f)
+
+    def save_config(self):
+        """Saves the current settings to config.json."""
+        self.config['font_family'] = self.font_family_entry.get()
+        self.config['font_size'] = int(self.font_size_entry.get()) # Convert to int
+        self.config['line_spacing'] = int(self.line_spacing_entry.get()) # Convert to int
+
+        with open(self.config_path, 'w') as f:
+            json.dump(self.config, f, indent=4)
+
+        messagebox.showinfo("Success", "Settings saved successfully!")
 
     def browse_directory(self):
         directory = filedialog.askdirectory()

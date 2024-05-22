@@ -19,24 +19,41 @@ This Python application allows you to easily convert the contents of files withi
 
 *   Python 3.6 or later
 *   Tkinter library (usually included with Python) 
-*   `file` command (available on most Unix-based systems and through tools like Cygwin on Windows)
+*   `tree` command (available on most Unix-based systems and through tools like Cygwin on Windows)
 
-### Installation:
+### Installation
 
-1.  Clone or download the repository.
-2.  Open a terminal in the project directory.
-3.  Install the required dependencies:
+1. **Clone the repository:**
+   ```bash
+   git clone [your repository URL]
+   ```
 
-```bash
-pip install -r requirements.txt
-``` 
+2. **Navigate to the project directory:**
+   ```bash
+   cd PDF-Generator
+   ```
+
+3. **Create and activate a virtual environment (recommended):**
+   ```bash
+   # Create the environment
+   python3 -m venv env  # Or use 'python -m venv env'
+
+   # Activate the environment
+   source env/bin/activate  # Linux/macOS
+   env\Scripts\activate.bat  # Windows
+   ```
+
+4. **Install the required dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Usage:
 
 ### Command-Line Interface (CLI):
 # Basic usage
 ```
-python main.py <directory_path>
+python main.py <directory_path> [options]
 ```
 
 **Options:**
@@ -81,9 +98,14 @@ python main.py my_project -f .scmp
 
 ### Graphical User Interface (GUI):
 
-1.  Run `python main.py`.
+1.  Run `python gui.py`.
 2.  Use the GUI to select the directory, specify file types, and choose options. 
 3.  Click "Generate PDF".
+
+## Configuration
+
+- **`config.json`:** You can customize default settings like font family, font size, and line spacing by modifying the `config.json` file.
+- **GUI Settings:** The GUI provides an interface to change these settings as well.
 
 ## Contributing
 

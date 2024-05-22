@@ -130,9 +130,11 @@ class PDFGeneratorApp:
             result = pdf_generator.generate_pdf(include_hidden, file_types, self.update_progress, self.update_feedback)
 
             if result is True:  # Check if PDF was successfully generated
+                print("PDF generated successfully!") # Console message for success
                 self.update_status("Generating directory structure...")
                 dir_structure_gen = DirectoryStructureGenerator(directory, output_subdir_path)
                 dir_structure_gen.generate_directory_structure()
+                print("Directory structure text file generated successfully!") # Console success message
 
                 self.update_status("Completed!")  
                 messagebox.showinfo("Success", "PDF and directory structure generated successfully!")
@@ -147,8 +149,11 @@ class PDFGeneratorApp:
             self.update_status("")  # Clear status message
 
     def update_progress(self, current, total):
-        self.progress_bar["value"] = (current / total) * 100
-        self.master.update_idletasks()  
+        if total > 0:
+            self.progress_bar["value"] = (current / total) * 100
+        else:
+            self.progress_bar["value"] = 100  # Assuming completion when total is 0
+        self.master.update_idletasks()
 
     def update_feedback(self, message):
         self.feedback_listbox.insert(tk.END, message)

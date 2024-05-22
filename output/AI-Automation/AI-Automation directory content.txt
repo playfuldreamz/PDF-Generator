@@ -1,0 +1,215 @@
+Folder PATH listing for volume Windows
+Volume serial number is 00000003 32ED:1CD1
+C:\USERS\OUWADIALE\DOCUMENTS\GITHUB\AI-AUTOMATION
+³   .DS_Store
+³   .gitignore
+³   AI-Automation dir content.pdf
+³   LICENSE
+³   README.md
+³   
+ÃÄÄÄdocumentation
+³   ³   documentation dir content.pdf
+³   ³   README.md
+³   ³   
+³   ÃÄÄÄcreate_code_doc
+³   ³   ³   createdoc.sh
+³   ³   ³   create_code_doc dir content.pdf
+³   ³   ³   docprmt.txt
+³   ³   ³   README.md
+³   ³   ³   
+³   ³   ÀÄÄÄprompts
+³   ³           prompts dir content.pdf
+³   ³           structured_doc.txt
+³   ³           
+³   ÀÄÄÄcreate_overview_doc
+³       ³   createdoc.sh
+³       ³   programming_languages.csv
+³       ³   README.md
+³       ³   skip_list.csv
+³       ³   
+³       ÃÄÄÄAI_Prompts
+³       ³       fix_mermaid_syntax_prompt.txt
+³       ³       high_level_doc_prompt.txt
+³       ³       mermaid_doc_prompt.txt
+³       ³       system_introduction_prompt.txt
+³       ³       system_overview_mermaid_update_prompt.txt
+³       ³       
+³       ÀÄÄÄExamples
+³           ³   README.md
+³           ³   
+³           ÃÄÄÄhobbyist
+³           ³   ÀÄÄÄdoc_Spotify-Gesture-Control-main
+³           ³           gesture_recognition.py_Doc.md
+³           ³           High_Level_Doc-1.svg
+³           ³           High_Level_Doc-2.svg
+³           ³           High_Level_Doc-3.svg
+³           ³           High_Level_Doc-4.svg
+³           ³           High_Level_Doc.md
+³           ³           main.py_Doc.md
+³           ³           overview.mdd
+³           ³           spotify_functions.py_Doc.md
+³           ³           
+³           ÀÄÄÄproduction
+³               ÀÄÄÄdoc_MemGPT-main
+³                       agent.py_Doc.md
+³                       agent_autoreply.py_Doc.md
+³                       agent_docs.py_Doc.md
+³                       agent_groupchat.py_Doc.md
+³                       airoboros.py_Doc.md
+³                       api.py_Doc.md
+³                       base.py_Doc.md
+³                       chat_completion_proxy.py_Doc.md
+³                       cli.py_Doc.md
+³                       cli_config.py_Doc.md
+³                       cli_load.py_Doc.md
+³                       config.py_Doc.md
+³                       constants.py_Doc.md
+³                       db.py_Doc.md
+³                       dolphin.py_Doc.md
+³                       embeddings.py_Doc.md
+³                       errors.py_Doc.md
+³                       extras.py_Doc.md
+³                       functions.py_Doc.md
+³                       generate_embeddings_for_docs.py_Doc.md
+³                       gpt_functions.py_Doc.md
+³                       gpt_summarize.py_Doc.md
+³                       gpt_system.py_Doc.md
+³                       High_Level_Doc-1.svg
+³                       High_Level_Doc-10.svg
+³                       High_Level_Doc-11.svg
+³                       High_Level_Doc-12.svg
+³                       High_Level_Doc-13.svg
+³                       High_Level_Doc-14.svg
+³                       High_Level_Doc-15.svg
+³                       High_Level_Doc-16.svg
+³                       High_Level_Doc-17.svg
+³                       High_Level_Doc-18.svg
+³                       High_Level_Doc-19.svg
+³                       High_Level_Doc-2.svg
+³                       High_Level_Doc-20.svg
+³                       High_Level_Doc-21.svg
+³                       High_Level_Doc-22.svg
+³                       High_Level_Doc-23.svg
+³                       High_Level_Doc-24.svg
+³                       High_Level_Doc-25.svg
+³                       High_Level_Doc-26.svg
+³                       High_Level_Doc-27.svg
+³                       High_Level_Doc-28.svg
+³                       High_Level_Doc-29.svg
+³                       High_Level_Doc-3.svg
+³                       High_Level_Doc-30.svg
+³                       High_Level_Doc-31.svg
+³                       High_Level_Doc-32.svg
+³                       High_Level_Doc-33.svg
+³                       High_Level_Doc-34.svg
+³                       High_Level_Doc-35.svg
+³                       High_Level_Doc-36.svg
+³                       High_Level_Doc-37.svg
+³                       High_Level_Doc-38.svg
+³                       High_Level_Doc-39.svg
+³                       High_Level_Doc-4.svg
+³                       High_Level_Doc-40.svg
+³                       High_Level_Doc-41.svg
+³                       High_Level_Doc-42.svg
+³                       High_Level_Doc-43.svg
+³                       High_Level_Doc-44.svg
+³                       High_Level_Doc-45.svg
+³                       High_Level_Doc-46.svg
+³                       High_Level_Doc-47.svg
+³                       High_Level_Doc-48.svg
+³                       High_Level_Doc-49.svg
+³                       High_Level_Doc-5.svg
+³                       High_Level_Doc-50.svg
+³                       High_Level_Doc-51.svg
+³                       High_Level_Doc-52.svg
+³                       High_Level_Doc-53.svg
+³                       High_Level_Doc-54.svg
+³                       High_Level_Doc-55.svg
+³                       High_Level_Doc-56.svg
+³                       High_Level_Doc-57.svg
+³                       High_Level_Doc-58.svg
+³                       High_Level_Doc-59.svg
+³                       High_Level_Doc-6.svg
+³                       High_Level_Doc-60.svg
+³                       High_Level_Doc-61.svg
+³                       High_Level_Doc-62.svg
+³                       High_Level_Doc-63.svg
+³                       High_Level_Doc-64.svg
+³                       High_Level_Doc-65.svg
+³                       High_Level_Doc-66.svg
+³                       High_Level_Doc-67.svg
+³                       High_Level_Doc-68.svg
+³                       High_Level_Doc-69.svg
+³                       High_Level_Doc-7.svg
+³                       High_Level_Doc-70.svg
+³                       High_Level_Doc-71.svg
+³                       High_Level_Doc-72.svg
+³                       High_Level_Doc-73.svg
+³                       High_Level_Doc-74.svg
+³                       High_Level_Doc-75.svg
+³                       High_Level_Doc-8.svg
+³                       High_Level_Doc-9.svg
+³                       High_Level_Doc.md
+³                       humans.py_Doc.md
+³                       interface.py_Doc.md
+³                       json_parser.py_Doc.md
+³                       legacy_api.py_Doc.md
+³                       legacy_settings.py_Doc.md
+³                       local.py_Doc.md
+³                       main.py_Doc.md
+³                       memgpt_agent.py_Doc.md
+³                       memory.py_Doc.md
+³                       openai_parallel_request_processor.py_Doc.md
+³                       openai_tools.py_Doc.md
+³                       overview.mdd
+³                       persistence_manager.py_Doc.md
+³                       personas.py_Doc.md
+³                       presets.py_Doc.md
+³                       schema_generator.py_Doc.md
+³                       scrape_docs.py_Doc.md
+³                       settings.py_Doc.md
+³                       simple_summary_wrapper.py_Doc.md
+³                       storage.py_Doc.md
+³                       system.py_Doc.md
+³                       test_cli.py_Doc.md
+³                       test_json_parsers.py_Doc.md
+³                       test_load_archival.py_Doc.md
+³                       test_questionary.py_Doc.md
+³                       test_schema_generator.py_Doc.md
+³                       test_storage.py_Doc.md
+³                       test_websocket_interface.py_Doc.md
+³                       test_websocket_server.py_Doc.md
+³                       utils.py_Doc.md
+³                       websocket_client.py_Doc.md
+³                       websocket_interface.py_Doc.md
+³                       websocket_protocol.py_Doc.md
+³                       websocket_server.py_Doc.md
+³                       wrapper_base.py_Doc.md
+³                       zephyr.py_Doc.md
+³                       __main__.py_Doc.md
+³                       
+ÃÄÄÄgit
+³   ÀÄÄÄcommit_msg
+³       ³   commit_message_generator.py
+³       ³   README.md
+³       ³   
+³       ÀÄÄÄprompts
+³               commitmsg.pmt
+³               
+ÃÄÄÄreleasenotes
+³   ³   README.md
+³   ³   release_notes_generator.py
+³   ³   
+³   ÀÄÄÄprompts
+³           genrelease.pmt
+³           
+ÀÄÄÄunittests
+    ÀÄÄÄgentestcase
+        ³   extract_code.sh
+        ³   generate_testcases.sh
+        ³   README.md
+        ³   
+        ÀÄÄÄprompts
+                gen_test_case_1.pmt
+                gen_test_case_2.pmt
+                

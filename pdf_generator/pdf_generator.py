@@ -1,6 +1,7 @@
 import os
 import json
-import subprocess
+import mimetypes
+
 from utils.logging_utils import logger
 from .pdf_operations import PDFOperations
 
@@ -10,8 +11,10 @@ class PDFGenerator:
         self.output_path = output_path
         self.exclude_folders = exclude_folders if exclude_folders else []
         self.exclude_file_types = exclude_file_types if exclude_file_types else []
+
         with open(config_path, 'r') as config_file:
             config = json.load(config_file)
+
         self.font_family = config.get('font_family', 'Arial')
         self.font_size = config.get('font_size', 10)
         self.line_spacing = config.get('line_spacing', 10)
@@ -22,17 +25,13 @@ class PDFGenerator:
         return text.encode("ascii", errors="ignore").decode("utf-8")
 
     def get_file_type(self, file_path):
-        try:
-            result = subprocess.run(["file", "-b", file_path], capture_output=True, text=True, check=True)
-            file_type = result.stdout.strip()
-            return file_type
-        except subprocess.CalledProcessError as e:
-            logger.warning(f"Error determining file type for {file_path}: {e}")
-            return None  # Return None if an error occurs
+        mime_type, _ = mimetypes.guess_type(file_path)
+        return mime_type if mime_type else "application/octet-stream"
 
-    def process_directory(self, directory_path, include_hidden, file_types):
-        # Check if the current directory is in the list of excluded folders
-        if os.path.basename(directory_path) in self.exclude_folders:
+    def process_directory(self, directory_path, include_hidden, file_types, feedback_callback=None):
+        # Check if the current directory should be excluded (hidden or in exclude_folders list)
+        if (not include_hidden and os.path.basename(directory_path).startswith('.')) or \
+        os.path.basename(directory_path) in self.exclude_folders:
             return  # Skip processing this directory
 
         # Set font for directory description
@@ -44,14 +43,14 @@ class PDFGenerator:
             if (include_hidden or not item.startswith('.')) and os.path.isfile(item_path):
                 # Check file type inclusion and exclusion
                 file_extension = os.path.splitext(item)[-1]
-                if file_extension:
+                if file_extension:  # Check if extension exists
                     should_process = (file_types is None or file_extension in file_types) and \
-                                    file_extension not in self.exclude_file_types
+                                     file_extension not in self.exclude_file_types
                 else:
                     file_type = self.get_file_type(item_path)
                     # Check if detected file type (or "text" for broader matching) is in exclude_file_types
                     should_process = not any(
-                        excluded_type in file_type or excluded_type in "text" 
+                        excluded_type in file_type or excluded_type in "text"
                         for excluded_type in self.exclude_file_types
                     )
 
@@ -76,21 +75,28 @@ class PDFGenerator:
                         self.pdf_operations.add_text(filtered_content, align='L')
                         self.pdf_operations.add_line_break()
 
-                        # Log information about the file that was processed
+                        # Log and provide feedback for the processed file
                         logger.info(f"Processed file: {item_path}")
+                        if feedback_callback:
+                            feedback_callback(f"Processed file: {item_path}") 
 
                     except UnicodeDecodeError:
                         # If a UnicodeDecodeError occurs, skip this file
                         logger.warning(f"Skipping file {item} due to encoding issues.")
+                        if feedback_callback:
+                            feedback_callback(f"Skipped file {item} due to encoding issues.")
 
                     except OSError as e:
                         # Log other OS errors
                         logger.error(f"Error processing file {item}: {e}")
+                        if feedback_callback:
+                            feedback_callback(f"Error processing file {item}: {e}")
+
             elif os.path.isdir(item_path):
                 # If the item is a directory, recursively process it
-                self.process_directory(item_path, include_hidden, file_types)
+                self.process_directory(item_path, include_hidden, file_types, feedback_callback)
 
-    def generate_pdf(self, include_hidden, file_types):
+    def generate_pdf(self, include_hidden, file_types, progress_callback=None, feedback_callback=None):
         try:
             # Add a new page to the PDF
             self.pdf_operations.add_page()
@@ -98,15 +104,37 @@ class PDFGenerator:
 
             # Add a description at the top of the PDF including the directory name
             directory_name = os.path.basename(self.directory)
-            self.pdf_operations.add_text(f"This PDF contains the contents of folders and files from the directory '{directory_name}' and its subdirectories.").add_line_break()
+            self.pdf_operations.add_text(
+                f"This PDF contains the contents of folders and files from the directory '{directory_name}' and its subdirectories.").add_line_break()
+
+            # Get total file count (excluding files in excluded folders)
+            total_file_count = 0
+            for root, _, files in os.walk(self.directory):
+                if os.path.basename(root) not in self.exclude_folders:  # Only count files in non-excluded folders
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        file_extension = os.path.splitext(file)[-1]
+                        if file_extension:
+                            should_count = (file_types is None or file_extension in file_types) and \
+                                           file_extension not in self.exclude_file_types
+                        else:
+                            file_type = self.get_file_type(file_path)
+                            should_count = not any(
+                                excluded_type in file_type or excluded_type in "text"
+                                for excluded_type in self.exclude_file_types
+                            ) 
+                        if should_count:
+                            total_file_count += 1
 
             # Process the directory and its subdirectories
+            current_file_count = 0
             if not file_types:
                 logger.verbose("Processing all files.")
-                self.process_directory(self.directory, include_hidden, None)
+                self.process_directory(self.directory, include_hidden, None, feedback_callback)
             else:
                 logger.verbose(f"Processing files with the following extensions: {', '.join(file_types)}")
-                self.process_directory(self.directory, include_hidden, file_types)
+                self.process_directory(self.directory, include_hidden, file_types, feedback_callback)
+
 
             # Log a message if no files of the specified type were found
             if not self.found_file and file_types is not None:
@@ -118,6 +146,14 @@ class PDFGenerator:
             # Save the PDF with the specified name
             logger.verbose("Saving PDF...")
             self.pdf_operations.save_pdf(output_filename)
+
+            # Final progress update
+            if progress_callback:
+                progress_callback(total_file_count, total_file_count)
+
+            return True  # Indicate successful PDF generation
+        
         except Exception as e:
             logger.error(f"Error generating PDF: {e}")
             logger.exception(e)
+            return e  # Return the exception object

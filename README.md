@@ -25,7 +25,7 @@ This Python application allows you to easily convert the contents of files withi
 
 1. **Clone the repository:**
    ```bash
-   git clone [your repository URL]
+   git clone https://github.com/playfuldreamz/PDF-Generator
    ```
 
 2. **Navigate to the project directory:**

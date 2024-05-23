@@ -14,18 +14,24 @@ from directory_structure_generator.directory_structure_generator import Director
 from utils.argparse_utils import parse_arguments
 from utils.logging_utils import configure_logging
 
-from gui import create_gui  # Assuming your GUI creation function is named create_gui
-
 def main():
-    args = parse_arguments()
-
+    """
+    Creates a logs directory in the same directory as the script, and configures logging to write to a log file in that directory.
+    """
     logs_dir = os.path.join(os.path.dirname(__file__), 'logs')
     os.makedirs(logs_dir, exist_ok=True)
-
     log_file = os.path.join(logs_dir, 'pdf_generator.log')
-
     logger = configure_logging(log_file)
-
+    
+    
+    # Checks if the provided directory path is valid, and exits with an error code if it is not.
+    args = parse_arguments()
+    if not os.path.isdir(args.directory):
+        logger.error(f"Invalid directory path: {args.directory}")
+        print("Invalid directory path: " + args.directory)
+        print("Please provide a valid directory path.")
+        exit(1)  # Exit with an error code
+ 
     # Determine the output folder path using a relative path from main.py
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_folder_path = os.path.join(script_dir, 'output')

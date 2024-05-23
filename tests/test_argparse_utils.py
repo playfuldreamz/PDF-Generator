@@ -87,7 +87,20 @@ class TestArgparseUtils(unittest.TestCase):
         ):
             args = parse_arguments()
             self.assertEqual(args.exclude_folders, ["folder1", "folder2", "folder3"])
+            
+    def test_multiple_occurrences_of_same_argument(self):
+        with patch("sys.argv", ["script_name", "test_directory", "-t", ".txt", "-t", ".log"]):
+            args = parse_arguments()
+            self.assertEqual(args.file_types, [".txt", ".log"])
 
+    def test_exclusion_lists_with_similar_names(self):
+        with patch(
+            "sys.argv",
+            ["script_name", "test_directory", "-e", "folder", "folder1", "-f", ".log", ".log1"],
+        ):
+            args = parse_arguments()
+            self.assertEqual(args.exclude_folders, ["folder", "folder1"])
+            self.assertEqual(args.exclude_file_types, [".log", ".log1"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -101,6 +101,48 @@ class TestArgparseUtils(unittest.TestCase):
             args = parse_arguments()
             self.assertEqual(args.exclude_folders, ["folder", "folder1"])
             self.assertEqual(args.exclude_file_types, [".log", ".log1"])
+            
+    def test_mixed_valid_invalid_file_types(self):
+        with patch("sys.argv", ["script_name", "test_directory", "-t", ".txt", "invalid_type"]):
+            args = parse_arguments()
+            self.assertEqual(args.directory, "test_directory")
+            self.assertEqual(args.file_types, [".txt", "invalid_type"])  # Should handle this gracefully, or you can add validation logic
+
+    def test_invalid_arguments(self):
+        with self.assertRaises(SystemExit):
+            with patch("sys.argv", ["script_name", "-invalid"]):
+                parse_arguments()
+
+    def test_verbose_flag(self):
+        with patch("sys.argv", ["script_name", "test_directory", "-v"]):
+            args = parse_arguments()
+            self.assertEqual(args.directory, "test_directory")
+            self.assertTrue(args.verbose)
+            self.assertFalse(args.include_hidden)
+
+    def test_include_hidden_flag(self):
+        with patch("sys.argv", ["script_name", "test_directory", "-i"]):
+            args = parse_arguments()
+            self.assertEqual(args.directory, "test_directory")
+            self.assertFalse(args.verbose)
+            self.assertTrue(args.include_hidden)
+            
+    def test_conflicting_arguments(self):
+        with patch("sys.argv", ["script_name", "test_directory", "-v", "-i"]):
+            args = parse_arguments()
+            self.assertEqual(args.directory, "test_directory")
+            self.assertTrue(args.verbose)
+            self.assertTrue(args.include_hidden)
+            
+    def test_empty_optional_arguments(self):
+        with patch(
+            "sys.argv",
+            ["script_name", "test_directory", "-t", "-e", "-f"]
+        ):
+            args = parse_arguments()
+            self.assertEqual(args.file_types, [])
+            self.assertEqual(args.exclude_folders, [])
+            self.assertEqual(args.exclude_file_types, [])
 
 if __name__ == "__main__":
     unittest.main()

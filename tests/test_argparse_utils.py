@@ -1,4 +1,5 @@
 import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 import argparse
@@ -39,7 +40,7 @@ class TestArgparseUtils(unittest.TestCase):
         for directory in invalid_directories:
             with self.subTest(directory=directory):
                 result = subprocess.run(
-                    ["python", "main.py", directory],  # Adjust command as needed
+                    [sys.executable, "main.py", directory],  # Adjust command as needed
                     capture_output=True,
                     text=True,
                 )
@@ -55,7 +56,7 @@ class TestArgparseUtils(unittest.TestCase):
         for file_type in invalid_file_types:
             with self.subTest(file_type=file_type):
                 result = subprocess.run(
-                    ["python", "main.py", "test_directory", "-t", file_type],
+                    [sys.executable, "main.py", "test_directory", "-t", file_type],
                     capture_output=True, 
                     text=True, 
                 )

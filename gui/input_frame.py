@@ -1,6 +1,6 @@
 # gui/input_frame.py
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import filedialog
 
 class InputFrame(tk.LabelFrame):
     def __init__(self, master, on_input_change=None):

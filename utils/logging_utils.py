@@ -1,5 +1,4 @@
 import logging
-import os
 
 # Create a logger
 logger = logging.getLogger('pdf_generator')

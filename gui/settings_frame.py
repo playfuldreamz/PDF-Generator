@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, font
+from tkinter import messagebox
 import json
 
 class SettingsFrame(tk.LabelFrame):

@@ -3,7 +3,7 @@ import os
 import logging
 import tempfile
 
-from utils.logging_utils import configure_logging, logger, VERBOSE
+from utils.logging_utils import configure_logging, VERBOSE
 
 class TestLoggingConfiguration(unittest.TestCase):
     def setUp(self):

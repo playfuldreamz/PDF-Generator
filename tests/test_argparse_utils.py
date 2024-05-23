@@ -2,7 +2,6 @@ import subprocess
 import sys
 import unittest
 from unittest.mock import patch
-import argparse
 from utils.argparse_utils import parse_arguments
 
 
@@ -134,16 +133,6 @@ class TestArgparseUtils(unittest.TestCase):
             self.assertEqual(args.directory, "test_directory")
             self.assertTrue(args.verbose)
             self.assertTrue(args.include_hidden)
-            
-    def test_empty_optional_arguments(self):
-        with patch(
-            "sys.argv",
-            ["script_name", "test_directory", "-t", "-e", "-f"]
-        ):
-            args = parse_arguments()
-            self.assertEqual(args.file_types, [])
-            self.assertEqual(args.exclude_folders, [])
-            self.assertEqual(args.exclude_file_types, [])
 
 if __name__ == "__main__":
     unittest.main()

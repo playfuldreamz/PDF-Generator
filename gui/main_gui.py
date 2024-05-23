@@ -1,14 +1,11 @@
-import tkinter as tk
-from tkinter import ttk, font
 import os
+import tkinter as tk
+from tkinter import font
 
 from .settings_frame import SettingsFrame
 from .input_frame import InputFrame
 from .output_frame import OutputFrame
 from .event_handler import GUIEventHandler
-
-from pdf_generator.pdf_generator import PDFGenerator
-from directory_structure_generator.directory_structure_generator import DirectoryStructureGenerator 
 
 class PDFGeneratorApp:
     def __init__(self, master):
@@ -40,12 +37,27 @@ class PDFGeneratorApp:
         generate_button.pack(pady=10)
 
     def handle_input_change(self):
-        """Handles changes to input fields (currently not used, but can be extended)."""
-        pass 
+        """Handles changes to input fields. Updates status based on input validity."""
+        inputs = self.input_frame.get_user_inputs()
+        directory = inputs['directory']
+        file_types = inputs['file_types']
+
+        # Input Validation
+        if not directory or not os.path.isdir(directory):
+            self.output_frame.update_status("Please select a valid directory.")
+            return
+
+        for file_type in file_types or []:
+            if not file_type.startswith("."):
+                self.output_frame.update_status("File types must start with a '.' (e.g., .txt)")
+                return
+
+        # If all inputs are valid, update status to indicate readiness
+        self.output_frame.update_status("Inputs are valid. Ready to generate PDF.")         
 
 def create_gui():
     root = tk.Tk()
-    app = PDFGeneratorApp(root)
+    PDFGeneratorApp(root)
     root.mainloop()
 
 if __name__ == "__main__":

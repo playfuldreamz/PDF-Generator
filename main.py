@@ -23,14 +23,20 @@ def main():
     log_file = os.path.join(logs_dir, 'pdf_generator.log')
     logger = configure_logging(log_file)
     
-    
-    # Checks if the provided directory path is valid, and exits with an error code if it is not.
     args = parse_arguments()
-    if not os.path.isdir(args.directory):
-        logger.error(f"Invalid directory path: {args.directory}")
-        print("Invalid directory path: " + args.directory)
+    
+    # 1. Get Directory Input (Command Line or Prompt)
+    if args.directory:
+        directory = args.directory 
+    else:
+        directory = input("Enter the directory path: ")
+
+    # 2. Validate Directory
+    if not os.path.isdir(directory):
+        logger.error(f"Invalid directory path: {directory}")
+        print("Invalid directory path: " + directory)
         print("Please provide a valid directory path.")
-        exit(1)  # Exit with an error code
+        exit(1)
  
     # Determine the output folder path using a relative path from main.py
     script_dir = os.path.dirname(os.path.abspath(__file__))

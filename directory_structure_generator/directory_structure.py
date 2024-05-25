@@ -4,34 +4,43 @@ Generates a text file containing the directory structure of the provided directo
 directory: The path to the directory to generate the structure for.
 output_file_path: The path to write the generated directory structure text file to.
 """
+
+import json
 import os
 
-def print_directory_structure(start_path: str, indent: str = "") -> str:
-    """Generates a tree-like directory structure string.
+def print_directory_structure(start_path: str, ignore_file_path: str = 'ignore_folders.json') -> list:
+    """Generates a nested list representing the directory structure.
+       Ignores folders specified in a JSON file.
 
     Args:
         start_path (str): The starting directory path.
-        indent (str, optional): String used for indentation. Defaults to "".
+        ignore_file_path (str, optional): The path to the JSON file containing the ignore list. Defaults to 'ignore_folders.json'.
 
     Returns:
-        str: The directory structure as a string.
+        list: A nested list representing the directory structure.
     """
-    output = ""
-    items = os.listdir(start_path)
-    for index, item in enumerate(items):
+    try:
+        with open(ignore_file_path, 'r') as ignore_file:
+            ignore_folders = json.load(ignore_file)
+    except FileNotFoundError:
+        print(f"Warning: Ignore file '{ignore_file_path}' not found. Proceeding without ignoring folders.")
+        ignore_folders = []
+
+    structure = []
+    for item in os.listdir(start_path):
         item_path = os.path.join(start_path, item)
-        is_last_item = index == len(items) - 1  # Check if it's the last item
+        if item in ignore_folders:
+            continue  # Skip this item if it's in the ignore list
 
-        if is_last_item:
-            output += f"{indent}¦   {item}\n"
-            if os.path.isdir(item_path):
-                output += print_directory_structure(item_path, indent + "    ")  # Indentation for last folder
+        if os.path.isdir(item_path):
+            structure.append({
+                "name": item,
+                "type": "dir",
+                "children": print_directory_structure(item_path, ignore_file_path)
+            })
         else:
-            output += f"{indent}+---{item}\n"
-            if os.path.isdir(item_path):
-                output += print_directory_structure(item_path, indent + "¦   ")
-
-    return output
+            structure.append({"name": item, "type": "file"})
+    return structure
 
 def create_pdf_from_directory_structure(directory, output_file_path):
     """
@@ -42,6 +51,9 @@ def create_pdf_from_directory_structure(directory, output_file_path):
         # Generate the directory structure as a string
         directory_structure = print_directory_structure(directory)
 
+        # Convert the list to JSON string before writing
+        directory_structure = json.dumps(directory_structure, indent=4)
+        
         print(f"Writing directory structure to file: {output_file_path}")
         with open(output_file_path, 'w', encoding='utf-8') as txt_file:
             txt_file.write(directory_structure)

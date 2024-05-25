@@ -45,7 +45,8 @@ class GUIEventHandler:
         try:
             # 4. PDF Generation:
             pdf_generator = PDFGenerator(
-                directory, output_subdir_path, exclude_folders=exclude_folders, exclude_file_types=exclude_file_types
+                directory, output_subdir_path, exclude_folders=exclude_folders, exclude_file_types=exclude_file_types,
+                ignore_file_path='ignore_folders.json'
             )
             result = pdf_generator.generate_pdf(
                 include_hidden,
@@ -55,14 +56,19 @@ class GUIEventHandler:
             )
 
             if result is True:
+                print("PDF generated successfully!")
                 self.app.output_frame.update_status("Generating directory structure...")
 
-                # 5. Directory Structure Generation:
-                dir_structure_gen = DirectoryStructureGenerator(directory, output_subdir_path)
+                dir_structure_gen = DirectoryStructureGenerator(directory, output_subdir_path, ignore_file_path='ignore_folders.json')
                 dir_structure_gen.generate_directory_structure()
+
+                print("Directory structure text file generated successfully!")
                 self.app.output_frame.add_feedback("Directory structure text file generated successfully!")
                 self.app.output_frame.update_status("Completed!")
                 messagebox.showinfo("Success", "PDF and directory structure generated successfully!")
+            elif result is False:  
+                self.app.output_frame.update_status("No matching files found.")
+                messagebox.showinfo("Info", "No matching files were found to generate a PDF.")
             elif isinstance(result, Exception):  # Check if result is an exception
                 error_message = f"An error occurred during PDF generation: {result}"
                 self.app.output_frame.add_feedback(error_message)

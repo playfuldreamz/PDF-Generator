@@ -8,7 +8,7 @@ output_file_path: The path to write the generated directory structure text file 
 import json
 import os
 
-def print_directory_structure(start_path: str, ignore_file_path: str = 'ignore_folders.json') -> list:
+def print_directory_structure(start_path: str, ignore_file_path) -> list:
     """Generates a nested list representing the directory structure.
        Ignores folders specified in a JSON file.
 
@@ -42,14 +42,14 @@ def print_directory_structure(start_path: str, ignore_file_path: str = 'ignore_f
             structure.append({"name": item, "type": "file"})
     return structure
 
-def create_pdf_from_directory_structure(directory, output_file_path):
+def create_pdf_from_directory_structure(directory, output_file_path, ignore_file_path):
     """
     Generate a text file with the directory structure.
     """    
     # Write the directory structure to the text file
     try:
         # Generate the directory structure as a string
-        directory_structure = print_directory_structure(directory)
+        directory_structure = print_directory_structure(directory, ignore_file_path)
 
         # Convert the list to JSON string before writing
         directory_structure = json.dumps(directory_structure, indent=4)

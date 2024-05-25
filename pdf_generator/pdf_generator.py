@@ -8,9 +8,10 @@ from .pdf_operations import PDFOperations
 
 class PDFGenerator:
     def __init__(self, directory: str, output_path: str, 
-                 exclude_folders: Optional[List[str]] = None, 
-                 exclude_file_types: Optional[List[str]] = None, 
-                 config_path: str = 'config.json'):
+             exclude_folders: Optional[List[str]] = None, 
+             exclude_file_types: Optional[List[str]] = None,
+             config_path: str = 'config.json',
+             ignore_file_path: str = 'ignore_folders.json'):
         
         self.directory = directory
         self.output_path = output_path
@@ -22,6 +23,14 @@ class PDFGenerator:
         self.font_family = config.get('font_family', 'Arial')
         self.font_size = config.get('font_size', 10)
         self.line_spacing = config.get('line_spacing', 10)
+        
+        # Load ignore folders from JSON
+        try:
+            with open(ignore_file_path, 'r') as ignore_file:
+                self.ignore_folders = json.load(ignore_file)
+        except FileNotFoundError:
+            print(f"Warning: Ignore file '{ignore_file_path}' not found. Proceeding without ignoring folders.")
+            self.ignore_folders = []
 
         self.pdf_operations = PDFOperations()
         self.found_file = False
@@ -79,7 +88,8 @@ class PDFGenerator:
                            feedback_callback: Optional[Callable] = None):
         """Recursively processes directories and files."""
         if (not include_hidden and os.path.basename(directory_path).startswith('.')) or \
-           os.path.basename(directory_path) in self.exclude_folders:
+           os.path.basename(directory_path) in self.exclude_folders or \
+           os.path.basename(directory_path) in self.ignore_folders:
             return
 
         for item in os.listdir(directory_path):

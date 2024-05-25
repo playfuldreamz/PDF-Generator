@@ -3,5 +3,10 @@
     "__pycache__",
     "venv",
     ".benchmarks",
-    ".pytest_cache"
+    ".pytest_cache",
+    "bin",
+    "obj",
+    "node_modules",
+    "bower_components",
+    "vendor"
 ]

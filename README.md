@@ -105,6 +105,7 @@ python main.py my_project -f .scmp
 ## Configuration
 
 - **`config.json`:** You can customize default settings like font family, font size, and line spacing by modifying the `config.json` file.
+- **`ignore_folders.json`:** This file allows you to define a default list of folders to ignore during processing. The default list includes ".git" and "pycache". You can add or remove folders from this list as needed.
 - **GUI Settings:** The GUI provides an interface to change these settings as well.
 
 ## Contributing

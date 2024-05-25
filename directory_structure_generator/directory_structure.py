@@ -34,6 +34,6 @@ def create_pdf_from_directory_structure(directory, output_file_path):
     try:
         with open(output_file_path, 'w', encoding='utf-8') as txt_file:
             txt_file.write(directory_structure)
-        print(f"Saving Directory structure txt...")
+        print(f"Directory structure generation successful!")
     except IOError as e:
         print(f"Error writing to file: {e}")

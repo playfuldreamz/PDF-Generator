@@ -107,14 +107,22 @@ class PDFGenerator:
             ).add_line_break()
 
             total_file_count = self.get_total_file_count(file_types)
-            self.process_directory(self.directory, include_hidden, file_types, feedback_callback)
+            
+            # Explicitly check if file_types is empty to process all
+            if file_types is None or len(file_types) == 0: 
+                self.process_directory(self.directory, include_hidden, None, feedback_callback)  # Pass None to process all
+            else:
+                self.process_directory(self.directory, include_hidden, file_types, feedback_callback)
 
             if not self.found_file and file_types is not None:
                 logger.verbose(f"No files with the following extensions were found: {', '.join(file_types)}")
+                return False  # Indicate that no PDF was generated
 
             output_filename = os.path.join(self.output_path, f"{directory_name} dir content.pdf")
             logger.verbose("Saving PDF...")
             self.pdf_operations.save_pdf(output_filename)
+            #Tell the user where the PDF is saved
+            logger.verbose("PDF saved in " + output_filename)
 
             if progress_callback:
                 progress_callback(total_file_count, total_file_count)

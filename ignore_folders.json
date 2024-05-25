@@ -8,5 +8,9 @@
     "obj",
     "node_modules",
     "bower_components",
-    "vendor"
+    "vendor",
+    "bin",
+    "obj",
+    "output",
+    "logs"
 ]

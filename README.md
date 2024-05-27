@@ -51,7 +51,9 @@ This Python application allows you to easily convert the contents of files withi
 ## Usage:
 
 ### Command-Line Interface (CLI):
+
 # Basic usage
+
 ```
 python main.py <directory_path> [options]
 ```
@@ -119,6 +121,7 @@ We welcome contributions to make this project even better! Here's how you can ge
 ## Development Setup
 
 1.Fork the repository.
+
 2.Create a virtual environment:
 ```bash
 python -m venv venv

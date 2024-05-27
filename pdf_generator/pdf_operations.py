@@ -4,7 +4,7 @@ class PDFOperations:
     def __init__(self):
         self.pdf = FPDF()
         self.margin = 10
-        
+
     def add_page(self):
         self.pdf.add_page()
 

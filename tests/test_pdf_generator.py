@@ -10,7 +10,7 @@ class TestPDFGenerator(unittest.TestCase):
     def setUp(self):
         self.test_dir = tempfile.mkdtemp()  # Create a temporary directory for testing
         self.output_dir = os.path.join(self.test_dir, 'output')
-        os.makedirs(self.output_dir, exist_ok=True) 
+        os.makedirs(self.output_dir, exist_ok=True)
 
         # Create some test files
         self.create_test_file("file1.txt", "This is a test file.")
@@ -25,7 +25,7 @@ class TestPDFGenerator(unittest.TestCase):
 
     def tearDown(self):
         # Clean up the temporary directory after each test
-        shutil.rmtree(self.test_dir) 
+        shutil.rmtree(self.test_dir)
 
     def create_test_file(self, file_name, content, encoding='utf-8'):
         """Helper function to create test files."""
@@ -39,7 +39,7 @@ class TestPDFGenerator(unittest.TestCase):
         self.assertTrue(result, "PDF generation failed unexpectedly.")
 
         temp_dir_name = os.path.basename(self.test_dir)
-        output_pdf = os.path.join(self.test_dir, f"{temp_dir_name} dir content.pdf") 
+        output_pdf = os.path.join(self.test_dir, f"{temp_dir_name} dir content.pdf")
         self.assertTrue(os.path.isfile(output_pdf), "PDF file not found.")
         self.assert_pdf_content(output_pdf, [
             "file1.txt", "This is a test file.",
@@ -62,7 +62,7 @@ class TestPDFGenerator(unittest.TestCase):
 
     def test_generate_pdf_include_hidden(self):
         pdf_generator = PDFGenerator(self.test_dir, self.test_dir)
-        result = pdf_generator.generate_pdf(True, None)  
+        result = pdf_generator.generate_pdf(True, None)
         self.assertTrue(result)
 
         temp_dir_name = os.path.basename(self.test_dir)
@@ -74,14 +74,14 @@ class TestPDFGenerator(unittest.TestCase):
 
     def test_generate_pdf_exclude_folders(self):
         pdf_generator = PDFGenerator(self.test_dir, self.test_dir, exclude_folders=['subdir'])
-        result = pdf_generator.generate_pdf(False, None) 
+        result = pdf_generator.generate_pdf(False, None)
         self.assertTrue(result)
 
         temp_dir_name = os.path.basename(self.test_dir)
         output_pdf = os.path.join(self.test_dir, f"{temp_dir_name} dir content.pdf")
         self.assert_pdf_content(
             output_pdf,
-            ["file1.txt", "This is a test file.", "file2.py", "print('Hello, world!')", "file3.md", "# Test Markdown File"], 
+            ["file1.txt", "This is a test file.", "file2.py", "print('Hello, world!')", "file3.md", "# Test Markdown File"],
         )
 
     def test_generate_pdf_exclude_file_types(self):
@@ -120,5 +120,5 @@ class TestPDFGenerator(unittest.TestCase):
                 pdf_text += page.extract_text()
 
         for content_string in expected_content:
-            self.assertIn(content_string, pdf_text, 
+            self.assertIn(content_string, pdf_text,
                           f"Expected content '{content_string}' not found in PDF.")

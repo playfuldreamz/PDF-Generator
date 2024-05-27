@@ -12,7 +12,7 @@ def parse_arguments():
     parser.add_argument('-f', '--exclude-file-types', action='append', nargs='*', default=[], help='File types to exclude from processing')
 
     args = parser.parse_args()
-    
+ 
     # Flatten lists of lists created by `append` action
     args.file_types = [item for sublist in args.file_types for item in sublist] if args.file_types else []
     args.exclude_folders = [item for sublist in args.exclude_folders for item in sublist] if args.exclude_folders else []

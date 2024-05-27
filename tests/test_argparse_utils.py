@@ -19,7 +19,7 @@ class TestArgparseUtils(unittest.TestCase):
     def test_parse_arguments_optional_arguments(self):
         with patch(
             "sys.argv",
-            ["script_name", "test_directory", "-v", "-i", "-t", ".txt", ".log", "-e", "folder1", "folder2", "-f", ".ignore", ".tmp"],  
+            ["script_name", "test_directory", "-v", "-i", "-t", ".txt", ".log", "-e", "folder1", "folder2", "-f", ".ignore", ".tmp"],
         ):
             args = parse_arguments()
             self.assertEqual(args.directory, "test_directory")
@@ -56,8 +56,8 @@ class TestArgparseUtils(unittest.TestCase):
             with self.subTest(file_type=file_type):
                 result = subprocess.run(
                     [sys.executable, "main.py", "test_directory", "-t", file_type],
-                    capture_output=True, 
-                    text=True, 
+                    capture_output=True,
+                    text=True,
                 )
                 self.assertNotEqual(result.returncode, 0, f"Expected non-zero exit code for file type: {file_type}")
                 # Add assertions to check stderr for specific error messages
@@ -71,7 +71,7 @@ class TestArgparseUtils(unittest.TestCase):
             self.assertEqual(args.file_types, [])
             self.assertEqual(args.exclude_folders, [])
             self.assertEqual(args.exclude_file_types, [])
-            
+
     def test_parse_arguments_multiple_file_types(self):
         with patch(
             "sys.argv",

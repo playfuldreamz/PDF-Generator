@@ -1,4 +1,4 @@
-# PDF-Generator/run_gui.py 
+# PDF-Generator/run_gui.py
 import gui.main_gui # Importing the main GUI file
 
 if __name__ == "__main__":

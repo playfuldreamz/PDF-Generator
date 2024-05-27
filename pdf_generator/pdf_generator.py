@@ -83,7 +83,7 @@ class PDFGenerator:
             if feedback_callback:
                 feedback_callback(f"Error processing file {file_path}: {e}")
 
-    def process_directory(self, directory_path: str, include_hidden: bool, 
+    def process_directory(self, directory_path: str, include_hidden: bool,
                            file_types: Optional[List[str]], 
                            feedback_callback: Optional[Callable] = None):
         """Recursively processes directories and files."""

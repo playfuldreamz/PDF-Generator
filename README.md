@@ -100,9 +100,9 @@ python main.py my_project -f .scmp
 
 ### Graphical User Interface (GUI):
 
-1.  Run `python run_gui.py`.
-2.  Use the GUI to select the directory, specify file types, and choose options. 
-3.  Click "Generate PDF".
+1. Run `python run_gui.py`.
+2. Use the GUI to select the directory, specify file types, and choose options. 
+3. Click "Generate PDF".
 
 ## Configuration
 

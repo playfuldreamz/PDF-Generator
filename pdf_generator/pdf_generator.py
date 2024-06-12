@@ -84,13 +84,16 @@ class PDFGenerator:
                 feedback_callback(f"Error processing file {file_path}: {e}")
 
     def process_directory(self, directory_path: str, include_hidden: bool,
-                           file_types: Optional[List[str]], 
-                           feedback_callback: Optional[Callable] = None):
+                           file_types: Optional[List[str]],
+                           feedback_callback: Optional[Callable] = None,
+                           progress_callback: Optional[Callable] = None,
+                           current_file: int = 0,
+                           total_files: int = 0):
         """Recursively processes directories and files."""
         if (not include_hidden and os.path.basename(directory_path).startswith('.')) or \
            os.path.basename(directory_path) in self.exclude_folders or \
            os.path.basename(directory_path) in self.ignore_folders:
-            return
+            return current_file
 
         for item in os.listdir(directory_path):
             item_path = os.path.join(directory_path, item)
@@ -99,9 +102,23 @@ class PDFGenerator:
             if (include_hidden or not item.startswith('.')) and os.path.isfile(item_path):
                 if self.should_process_file(item_path, file_types):
                     self.found_file = True
+
+                    if feedback_callback:
+                        feedback_callback(f"Processing: {relative_path}")
+
                     self.process_file(item_path, relative_path, feedback_callback)
+
+                    if progress_callback:
+                        current_file += 1
+                        progress_callback(current_file, total_files)
+
             elif os.path.isdir(item_path):
-                self.process_directory(item_path, include_hidden, file_types, feedback_callback)
+                current_file = self.process_directory(  # Update current_file from recursive call
+                    item_path, include_hidden, file_types, feedback_callback,
+                    progress_callback=progress_callback, current_file=current_file,
+                    total_files=total_files
+                )
+        return current_file  # Return the updated current_file count
 
     def generate_pdf(self, include_hidden: bool, file_types: Optional[List[str]] = None, 
                      progress_callback: Optional[Callable] = None, 
@@ -119,10 +136,12 @@ class PDFGenerator:
             total_file_count = self.get_total_file_count(file_types)
             
             # Explicitly check if file_types is empty to process all
-            if file_types is None or len(file_types) == 0: 
-                self.process_directory(self.directory, include_hidden, None, feedback_callback)  # Pass None to process all
+            if file_types is None or len(file_types) == 0:
+                self.process_directory(self.directory, include_hidden, None, feedback_callback, 
+                                       progress_callback=progress_callback, total_files=total_file_count)
             else:
-                self.process_directory(self.directory, include_hidden, file_types, feedback_callback)
+                self.process_directory(self.directory, include_hidden, file_types, feedback_callback,
+                                       progress_callback=progress_callback, total_files=total_file_count)
 
             if not self.found_file and file_types is not None:
                 logger.verbose(f"No files with the following extensions were found: {', '.join(file_types)}")

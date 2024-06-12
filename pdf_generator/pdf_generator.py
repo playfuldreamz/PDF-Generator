@@ -47,6 +47,7 @@ class PDFGenerator:
     def should_process_file(self, file_path: str, file_types: Optional[List[str]] = None) -> bool:
         """Determines if a file should be processed based on inclusion/exclusion lists."""
         file_extension = os.path.splitext(file_path)[-1]
+        
         if file_extension:
             should_process = (file_types is None or file_extension in file_types) and \
                              file_extension not in self.exclude_file_types

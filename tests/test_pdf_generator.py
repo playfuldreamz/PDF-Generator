@@ -195,3 +195,11 @@ class TestPDFGenerator(unittest.TestCase):
                 page = pdf.pages[page_num]
                 pdf_text += page.extract_text()
             return pdf_text
+
+    def test_get_total_file_count_empty_directory(self):
+        """Tests get_total_file_count() with an empty directory."""
+        empty_dir = tempfile.mkdtemp()  # Create a new empty directory
+        pdf_generator = PDFGenerator(empty_dir, self.output_dir)
+        count = pdf_generator.get_total_file_count()
+        shutil.rmtree(empty_dir)  # Clean up temporary directory
+        self.assertEqual(count, 0, "Expected count to be 0 for an empty directory.")

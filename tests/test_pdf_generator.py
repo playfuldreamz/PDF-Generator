@@ -122,3 +122,76 @@ class TestPDFGenerator(unittest.TestCase):
         for content_string in expected_content:
             self.assertIn(content_string, pdf_text,
                           f"Expected content '{content_string}' not found in PDF.")
+            
+    def test_generate_pdf_no_matching_files(self):
+        """Tests when no files match the specified file types."""
+        pdf_generator = PDFGenerator(self.test_dir, self.output_dir)
+        result = pdf_generator.generate_pdf(False, [".docx"])  # Provide an uncommon file type
+        self.assertFalse(result, "Expected PDF generation to return False as no matching files found.")
+        
+    def test_generate_pdf_with_empty_file(self):
+        """Tests processing a directory with an empty file."""
+        self.create_test_file("empty_file.txt", "")  # Create an empty file
+        pdf_generator = PDFGenerator(self.test_dir, self.output_dir)
+        result = pdf_generator.generate_pdf(False, None)
+        self.assertTrue(result, "PDF generation failed unexpectedly.")
+        
+        temp_dir_name = os.path.basename(self.test_dir)
+        output_pdf = os.path.join(self.output_dir, f"{temp_dir_name} dir content.pdf")
+        self.assert_pdf_content(output_pdf, ["empty_file.txt"])  # Check if the filename is present
+        
+    def test_generate_pdf_exclude_files_without_extension(self):
+        """Tests excluding files without extensions."""
+        self.create_test_file("no_extension", "Content of file without extension")
+        pdf_generator = PDFGenerator(self.test_dir, self.output_dir, exclude_file_types=["text"])
+        result = pdf_generator.generate_pdf(False, None)  # Process all files
+        self.assertTrue(result, "PDF generation failed unexpectedly.")
+
+        temp_dir_name = os.path.basename(self.test_dir)
+        output_pdf = os.path.join(self.output_dir, f"{temp_dir_name} dir content.pdf")
+        self.assertNotIn("no_extension", self.get_text_from_pdf(output_pdf),
+                         "File without extension should be excluded")
+        
+    def test_generate_pdf_multiple_nested_directories(self):
+        """Tests processing multiple levels of nested directories."""
+        subsubdir = os.path.join(self.subdir, "subsubdir")
+        os.makedirs(subsubdir, exist_ok=True)
+        self.create_test_file(os.path.join(subsubdir, "nested_file.txt"), "Nested file content.")
+
+        pdf_generator = PDFGenerator(self.test_dir, self.output_dir)
+        result = pdf_generator.generate_pdf(False, None)
+        self.assertTrue(result, "PDF generation failed unexpectedly.")
+
+        temp_dir_name = os.path.basename(self.test_dir)
+        output_pdf = os.path.join(self.output_dir, f"{temp_dir_name} dir content.pdf")
+        self.assert_pdf_content(output_pdf, ["subdir", "subsubdir", "nested_file.txt", "Nested file content."])
+
+    def test_generate_pdf_ignore_folders(self):
+        """Test if specified folders are ignored."""
+        ignore_folder_name = "ignore_this"
+        ignore_folder_path = os.path.join(self.test_dir, ignore_folder_name)
+        os.makedirs(ignore_folder_path, exist_ok=True)
+        self.create_test_file(os.path.join(ignore_folder_path, "ignored_file.txt"), "This file should be ignored.")
+
+        pdf_generator = PDFGenerator(self.test_dir, self.output_dir, ignore_file_path="tests/test_ignore_folders.json")
+        result = pdf_generator.generate_pdf(False, None)
+
+        self.assertTrue(result, "PDF generation failed unexpectedly.")
+
+        temp_dir_name = os.path.basename(self.test_dir)
+        output_pdf = os.path.join(self.output_dir, f"{temp_dir_name} dir content.pdf")
+        pdf_text = self.get_text_from_pdf(output_pdf)
+
+        self.assertNotIn(ignore_folder_name, pdf_text, "Ignored folder found in the PDF")
+        self.assertNotIn("ignored_file.txt", pdf_text, "File from ignored folder found in the PDF")
+
+    def get_text_from_pdf(self, pdf_path):
+        """Helper to extract text from a PDF."""
+        with open(pdf_path, 'rb') as f:
+            pdf = PdfReader(f)
+            num_pages = len(pdf.pages)
+            pdf_text = ""
+            for page_num in range(num_pages):
+                page = pdf.pages[page_num]
+                pdf_text += page.extract_text()
+            return pdf_text

@@ -1,6 +1,7 @@
 # gui/input_frame.py
 import tkinter as tk
 from tkinter import filedialog
+from tkinterdnd2 import DND_FILES
 
 class InputFrame(tk.LabelFrame):
     def __init__(self, master, on_input_change=None):
@@ -12,12 +13,27 @@ class InputFrame(tk.LabelFrame):
         # Directory input
         directory_label = tk.Label(self, text="Directory:")
         directory_label.grid(row=0, column=0, sticky="w")
+
         self.directory_entry = tk.Entry(self, width=50)
         self.directory_entry.grid(row=0, column=1)
-        self.directory_entry.bind("<Enter>", lambda event: self.show_tooltip(event, "Enter the path to the directory containing the files to convert."))
+
+        # Tooltip Instructions
+        self.directory_entry.bind("<Enter>", lambda event: self.show_tooltip(event, 
+                                                             "Enter directory path or drag and drop folder here."))
         self.directory_entry.bind("<Leave>", lambda event: self.hide_tooltip())
+
+        # Placeholder Text (Disappears on click)
+        self.placeholder_text = "Browse for directory or drag and drop folder here..."
+        self.directory_entry.insert(0, self.placeholder_text)
+        self.directory_entry.bind("<FocusIn>", self.clear_placeholder)
+        self.directory_entry.bind("<FocusOut>", self.add_placeholder) 
+
         browse_button = tk.Button(self, text="Browse", command=self.browse_directory)
         browse_button.grid(row=0, column=2)
+
+        # Enable Drag-and-Drop on directory_entry
+        self.directory_entry.drop_target_register(DND_FILES)
+        self.directory_entry.dnd_bind("<<Drop>>", self.drop_inside_entry)
 
         # File types input (to include)
         file_types_label = tk.Label(self, text="File Types (to include):")
@@ -55,16 +71,32 @@ class InputFrame(tk.LabelFrame):
         include_hidden_checkbox.bind("<Enter>", lambda event: self.show_tooltip(event, "Check this box to include hidden files in the PDF."))
         include_hidden_checkbox.bind("<Leave>", lambda event: self.hide_tooltip())
         include_hidden_checkbox.bind("<ButtonRelease-1>", self.on_entry_change)  # Bind to button release
-
+        
     def browse_directory(self):
         directory = filedialog.askdirectory()
-        self.directory_entry.delete(0, tk.END)
-        self.directory_entry.insert(0, directory)
-        self.on_entry_change()
+        if directory:  # Only update if a directory is selected
+            self.directory_entry.delete(0, tk.END)
+            self.directory_entry.insert(0, directory)
+            self.on_entry_change()
 
     def on_entry_change(self, event=None):
         if self.on_input_change:
             self.on_input_change()
+            
+    def drop_inside_entry(self, event):
+        if event.data:
+            dropped_path = event.data.strip("{}")
+            self.directory_entry.delete(0, tk.END)
+            self.directory_entry.insert(0, dropped_path)
+            self.on_entry_change()  # Trigger validation
+    
+    def clear_placeholder(self, event):
+        if self.directory_entry.get() == self.placeholder_text:
+            self.directory_entry.delete(0, tk.END)
+
+    def add_placeholder(self, event):
+        if not self.directory_entry.get():
+            self.directory_entry.insert(0, self.placeholder_text)
 
     def get_user_inputs(self):
         return {

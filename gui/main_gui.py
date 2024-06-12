@@ -7,10 +7,12 @@ from .input_frame import InputFrame
 from .output_frame import OutputFrame
 from .event_handler import GUIEventHandler
 
+from tkinterdnd2 import DND_FILES, TkinterDnD
+
 class PDFGeneratorApp:
     def __init__(self, master):
-        self.master = master
-        master.title("PDF Generator")
+        self.master = master 
+        self.master.title("PDF Generator")
         self.config_path = 'config.json'
 
         # Configure default font style
@@ -18,8 +20,11 @@ class PDFGeneratorApp:
         master.option_add("*Font", default_font)
 
         # Create Frames
-        self.input_frame = InputFrame(master, on_input_change=self.handle_input_change)
+        self.input_frame = InputFrame(self.master, on_input_change=self.handle_input_change)
         self.input_frame.pack(padx=10, pady=10)
+
+        # Enable drag and drop on the directory entry
+        self.input_frame.directory_entry.dnd_bind("<<Drop>>", self.input_frame.drop_inside_entry)
 
         self.output_frame = OutputFrame(master)
         self.output_frame.pack(padx=10, pady=(0, 10))  # Adjust padding
@@ -56,7 +61,7 @@ class PDFGeneratorApp:
         self.output_frame.update_status("Inputs are valid. Ready to generate PDF.")         
 
 def create_gui():
-    root = tk.Tk()
+    root = TkinterDnD.Tk()
     PDFGeneratorApp(root)
     root.mainloop()
 
